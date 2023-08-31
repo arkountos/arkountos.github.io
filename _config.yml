@@ -5,9 +5,9 @@ description: A portfolio site to showcase my favorite projects
 # url: "localhost:3000" # the base hostname & protocol for your site e.g. http://willianjusten.com.br
 
 # User settings
-username: Hi, I'm Fivos
-user_description: "I'm Fivos Iliadis and I'm currently a senior student @ National Technical University of Athens where I study Electrical and Computer Engineering. I am focusing on Computer Systems and Cybersecurity.\nHere I want to showcase my writeups for simple CTF and security related challenges I solve online to help both myself and others!"
-user_title: and I like computers
+username: Hey, I'm Fivos
+user_description: "I'm Fivos Iliadis and I'm a PhD Student @ National Technical University of Athens. I got my MEng at the ECE department of NTUA, and I am now working on Computer Architecture and Systems Security. "
+user_title: a PhD Student at ECE-NTUA, and I like computers and stuff.
 email: fivosiliadis@gmail.com
 twitter_username: arkountos1
 github_username:  arkountos

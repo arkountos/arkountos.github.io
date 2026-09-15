@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DLMN orbit — integration example</title>
+<link rel="stylesheet" href="dlmn-orbit.css">
+<style>
+  body{background:#040705;color:#1c8c3c;margin:0;padding:40px 20px;
+       font:15px/1.5 Menlo,Consolas,"DejaVu Sans Mono",monospace;}
+  .container{max-width:74ch;margin:0 auto;}
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 1. The mount point. The <pre> is created by the script; you only need this. -->
+    <figure class="dlmn-orbit" id="orbit"></figure>
+
+    <!-- 2. Optional status strip. -->
+    <div class="dlmn-orbit__status">
+      <span>mesh uplink &#183; <b id="orbit-status">acquiring</b></span>
+      <button type="button" id="orbit-toggle">pause</button>
+    </div>
+
+  </div>
+
+<script src="dlmn-orbit.js"></script>
+<script>
+  // 3. Mount. Every option is optional — DLMNOrbit.mount(el) alone works.
+  var status = document.getElementById("orbit-status");
+
+  var orbit = DLMNOrbit.mount(document.getElementById("orbit"), {
+    onStatus: function (s) {
+      status.textContent = s.stationVisible
+        ? ("relay " + s.relay + ", " + s.links + " cross-links")
+        : "station below horizon";
+    }
+  });
+
+  document.getElementById("orbit-toggle").addEventListener("click", function () {
+    this.textContent = orbit.toggle() ? "pause" : "resume";
+  });
+</script>
+</body>
+</html>

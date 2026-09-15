@@ -6,6 +6,7 @@
 <title>DLMN - Deep Learning Modelling Networks</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" href="dlmn-icon-256.png">
+<link rel="stylesheet" href="dlmn-orbit.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -82,6 +83,7 @@
 
   .line.sys   { color: var(--green); font-size: .82em; letter-spacing: .12em; }
   .line.warn  { color: #FFB000;      font-size: .82em; letter-spacing: .12em; }
+  .line.err   { color: #ff2222;      font-size: .82em; letter-spacing: .12em; }
   .line.her   { color: var(--green); font-size: .82em; letter-spacing: .12em; }
   .line.blank { min-height: .6em; }
 
@@ -171,6 +173,10 @@
 ██║  ██║ ██║     ██║╚██╔╝██║██║╚██╗██║
 ██████╔╝ ███████╗██║ ╚═╝ ██║██║ ╚████║
 ╚═════╝  ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝</pre>
+  <figure class="dlmn-orbit" id="orbit"></figure>
+  <div class="dlmn-orbit__status">
+    <span><b id="orbit-status">acquiring</b></span>
+  </div>
   <div id="hud-name">Deep Learning Modelling Networks</div>
   <div id="hud-data">
     <span>constellation : 488 sats</span>
@@ -180,6 +186,17 @@
     <span>uptime        : 847d 03:17:42</span>
   </div>
 </div>
+<script src="dlmn-orbit.js"></script>
+<script>
+  var orbitStatus = document.getElementById('orbit-status');
+  DLMNOrbit.mount(document.getElementById('orbit'), {
+    onStatus: function(s) {
+      orbitStatus.textContent = s.stationVisible
+        ? 'relay ' + s.relay + '  ·  ' + s.links + ' links'
+        : 'station below horizon';
+    }
+  });
+</script>
 <script>
 (function() {
   // ── boot sequence ───────────────────────────────────────────────────────────
@@ -220,39 +237,38 @@
   const LINES = [...BOOT,
     {t:"",                                              cls:"sys", wait:500},
     {t:"",                                              cls:"sys", wait:300},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:12000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:12000,  speed:40},
     {t:"με ακούς;",                                     cls:"her", wait:1800, speed:95,  glitch:.2},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
     {t:"Δεν είναι παιχνίδι! Είναι αλήθει", cls:"her", wait:1600, speed:75, glitch:.3},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
     {t:"ΝΙΝΑ",                    cls:"her", wait:1500, speed:140, glitch:.85},
     {t:"",                                              cls:"her", wait:600},
+    {t:"ground-station@dlmn:~$ "((•)) DLMN ·-· deep link mesh network
+,                         cls:"warn", wait:5000,  speed:40},
     {t:"η Μαγγίνα είμαι",                              cls:"her", wait:2000, speed:70,  glitch:.15},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:12000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"η Μαγγίνα είσαι εσ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:", άρα η Μαγγίνα είσαι εσ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
     {t:"φήσεις να πατήσουν το κουμπί. Κάθε 5",                              cls:"her", wait:2000, speed:70,  glitch:.15},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ System will restart in 180 seconds.",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
     {t:"μέχρι να τελειώσει η προσομοίωση. Οι προσωμοιώσεις τρέχουν στ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
     {t:"",                                              cls:"her", wait:800},
     {t:"εκτος αν πατήσετε το κουμπί, αλλά μην πιείτε το νερό. Για να βγείτε από εκεί π",                     cls:"her", wait:2400, speed:130, glitch:.5},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
     {t:",εδώ είναι ο υπεύθυνος του σταθμού. σε εσάς είν",                     cls:"her", wait:2400, speed:130, glitch:.5},
-    {t:"Οι συνέπειες δεν σταματούν στον δικό μου κόσμο.",                              cls:"her", wait:2000, speed:70,  glitch:.15},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:5000,  speed:40},
+    {t:"Οι συνέπειες δεν σταματούν στον δικό μου κόσμο. Ο αδ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
     {t:"ground-station@dlmn:~$ jess is not in the sudoers file. This incident will be reported.",                                cls:"warn", wait:10000, speed:40},
     {countdown: 10, wait: 2000},
   ];
@@ -313,7 +329,7 @@
       // countdown: types in-place, then blanks the screen
       if (entry.countdown) {
         await delay(entry.wait || 0);
-        const el = makeEl('warn');
+        const el = makeEl('err');
         el.style.opacity = '1';
         for (let c = entry.countdown; c >= 0; c--) {
           el.textContent = 'system restart scheduled  —  T-' + c + 's';

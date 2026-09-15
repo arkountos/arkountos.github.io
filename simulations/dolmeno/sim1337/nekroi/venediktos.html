@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DLMN - Deep Learning Modelling Networks</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="dlmn-icon-256.png">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #00ff41;
+    --dim:   #007a1f;
+    --sys:   #FFB000;
+    --bg:    #030e03;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(14px, 2vw, 18px);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,.18) 3px,
+      rgba(0,0,0,.18) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 55%,
+      rgba(0,0,0,.75) 100%
+    );
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  #terminal {
+    position: fixed; inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+    gap: .55em;
+    z-index: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  #terminal::-webkit-scrollbar { display: none; }
+
+  .line {
+    display: block;
+    min-height: 1.4em;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+    opacity: 0;
+    transition: none;
+  }
+
+  .line.sys   { color: var(--green); font-size: .82em; letter-spacing: .12em; }
+  .line.warn  { color: #FFB000;      font-size: .82em; letter-spacing: .12em; }
+  .line.err   { color: #ff2222;      font-size: .82em; letter-spacing: .12em; }
+  .line.blank { min-height: .6em; }
+
+  .cursor {
+    display: inline-block;
+    width: .55em; height: 1em;
+    background: var(--green);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink .7s step-end infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  @keyframes flicker {
+    0%   { opacity: 0 }
+    8%   { opacity: .9 }
+    9%   { opacity: 0 }
+    10%  { opacity: .85 }
+    11%  { opacity: 0 }
+    20%  { opacity: 1 }
+    100% { opacity: 1 }
+  }
+  #terminal { animation: flicker 1.1s ease-out forwards; }
+
+  #hud {
+    position: fixed;
+    top: clamp(.8rem, 2vw, 1.6rem);
+    right: clamp(.8rem, 2vw, 1.6rem);
+    color: var(--green);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(14px, 1.8vw, 26px);
+    line-height: 1.25;
+    text-align: left;
+    z-index: 5;
+    pointer-events: none;
+    opacity: .72;
+    border-left: 1px solid rgba(0,255,65,.4);
+    padding-left: clamp(.6rem, 1.2vw, 1.2rem);
+  }
+
+  #hud-logo { white-space: pre; margin: 0; text-shadow: 0 0 6px rgba(0,255,65,.45); }
+  #hud-name { font-size: clamp(12px, 1.4vw, 20px); letter-spacing: .08em; margin-top: .5em; opacity: .85; }
+  #hud-data { margin-top: 2em; font-size: clamp(11px, 1.3vw, 18px); line-height: 1.9; opacity: .65; }
+  #hud-data span { display: block; }
+</style>
+</head>
+<body>
+<div id="terminal"></div>
+<div id="hud">
+  <pre id="hud-logo">
+██████╗  ██╗     ███╗   ███╗███╗   ██╗
+██╔══██╗ ██║     ████╗ ████║████╗  ██║
+██║  ██║ ██║     ██╔████╔██║██╔██╗ ██║
+██║  ██║ ██║     ██║╚██╔╝██║██║╚██╗██║
+██████╔╝ ███████╗██║ ╚═╝ ██║██║ ╚████║
+╚═════╝  ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝</pre>
+  <div id="hud-name">Deep Learning Modelling Networks</div>
+  <div id="hud-data">
+    <span>constellation : 488 sats</span>
+    <span>signal        : ---</span>
+    <span>latency       : --- ms</span>
+    <span>node          : sim1337</span>
+    <span>uptime        : 847d 03:17:42</span>
+  </div>
+</div>
+<script>
+(function() {
+  const BOOT = [
+    {t:"██████╗  ██╗     ███╗   ███╗███╗   ██╗", cls:"sys", wait:300, speed:2},
+    {t:"██╔══██╗ ██║     ████╗ ████║████╗  ██║", cls:"sys", wait:0,   speed:2},
+    {t:"██║  ██║ ██║     ██╔████╔██║██╔██╗ ██║", cls:"sys", wait:0,   speed:2},
+    {t:"██║  ██║ ██║     ██║╚██╔╝██║██║╚██╗██║", cls:"sys", wait:0,   speed:2},
+    {t:"██████╔╝ ███████╗██║ ╚═╝ ██║██║ ╚████║", cls:"sys", wait:0,   speed:2},
+    {t:"╚═════╝  ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝", cls:"sys", wait:0,   speed:2},
+    {t:"",                                        cls:"sys", wait:0},
+    {t:"Deep Learning Modelling Networks",        cls:"sys", wait:0,   speed:4},
+    {t:"",                                        cls:"sys", wait:400},
+    {t:"DLMN SYSTEMS  —  BIOS v2.31.09",              cls:"sys", wait:120, speed:4},
+    {t:"Copyright (C) 1998-2061 DLMN Systems Inc.",   cls:"sys", wait:60,  speed:4},
+    {t:"",                                             cls:"sys", wait:40},
+    {t:"CPU  : DLMN/PROC-X9  @  10GHz  [40 cores]",   cls:"sys", wait:80,  speed:4},
+    {t:"MEM  : 1048576K  OK",                          cls:"sys", wait:180, speed:4},
+    {t:"DISK : /dev/sda [OK]   /dev/sdb [OK]",         cls:"sys", wait:80,  speed:4},
+    {t:"",                                             cls:"sys", wait:50},
+    {t:"Loading DLMN/OS 7.4.1-sim ...",               cls:"sys", wait:350, speed:7},
+    {t:"[ OK ] simulation kernel",                     cls:"sys", wait:100, speed:5},
+    {t:"[ OK ] cluster daemon  —  node sim1337",       cls:"sys", wait:90,  speed:5},
+    {t:"[ OK ] encryption layer",                      cls:"sys", wait:80,  speed:5},
+    {t:"[ OK ] network  :  internal.dlmn.net",         cls:"sys", wait:80,  speed:5},
+    {t:"[ OK ] session logger",                        cls:"sys", wait:80,  speed:5},
+    {t:"",                                             cls:"sys", wait:100},
+    {t:"dlmn login: venediktos",                       cls:"sys", wait:550, speed:14},
+    {t:"password: ············",                       cls:"sys", wait:750, speed:16},
+    {t:"",                                             cls:"sys", wait:150},
+    {t:"last login: Thu Sep 21 03:17:42 2061 on tty1", cls:"sys", wait:110, speed:5},
+    {t:"session type: RESTRICTED  —  activity is logged", cls:"sys", wait:450, speed:5},
+    {t:"",                                             cls:"sys", wait:600},
+  ];
+
+  const LINES = [...BOOT,
+    {t:"",                                                     cls:"sys", wait:600},
+    {t:"running diagnostics  ...",                             cls:"sys", wait:400, speed:8},
+    {t:"",                                                     cls:"sys", wait:200},
+    {t:"[ OK ] simulation integrity     :  PASS",              cls:"sys", wait:300, speed:5},
+    {t:"[ OK ] memory allocation        :  STABLE",            cls:"sys", wait:120, speed:5},
+    {t:"[ OK ] neural interface         :  CONNECTED",         cls:"sys", wait:120, speed:5},
+    {t:"[ OK ] consciousness matrix     :  NOMINAL",           cls:"sys", wait:120, speed:5},
+    {t:"[ OK ] emotion buffer           :  WITHIN PARAMETERS", cls:"sys", wait:120, speed:5},
+    {t:"[ OK ] memory retention         :  97.3%",             cls:"sys", wait:120, speed:5},
+    {t:"[ OK ] external signal filter   :  ACTIVE",            cls:"sys", wait:120, speed:5},
+    {t:"",                                                     cls:"sys", wait:300},
+    {t:"simulation status  :  ALL SYSTEMS NOMINAL",            cls:"sys", wait:500, speed:8},
+    {t:"subject unaware of simulation boundaries",             cls:"sys", wait:200, speed:5},
+    {t:"",                                                     cls:"sys", wait:200},
+    {t:"monitoring active. no intervention required.",         cls:"sys", wait:200, speed:5},
+  ];
+
+  const GLITCH_CHARS = "▓▒░│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌";
+  const container = document.getElementById('terminal');
+
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function makeEl(cls) {
+    const el = document.createElement('span');
+    el.className = 'line ' + (cls || '');
+    el.style.opacity = '0';
+    container.appendChild(el);
+    container.scrollTop = container.scrollHeight;
+    return el;
+  }
+
+  async function typeText(el, text, speed, glitchProb) {
+    el.style.opacity = '1';
+    if (!text) return;
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    el.appendChild(cursor);
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const node = document.createTextNode(ch);
+      el.insertBefore(node, cursor);
+      if (glitchProb && Math.random() < glitchProb) {
+        node.textContent = GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+        await delay(speed * (.4 + Math.random() * .6));
+        node.textContent = ch;
+      }
+      const stutter = Math.random() < .05 ? speed * (1 + Math.random() * 3) : 0;
+      await delay(speed * (.5 + Math.random() * 1) + stutter);
+    }
+    cursor.remove();
+  }
+
+  async function run() {
+    for (let i = 0; i < LINES.length; i++) {
+      const { t, cls, wait, speed = 80, glitch = 0 } = LINES[i];
+      await delay(wait);
+      const el = makeEl(cls + (t === '' ? ' blank' : ''));
+      await typeText(el, t, speed, glitch);
+    }
+  }
+
+  document.addEventListener('copy',        e => e.preventDefault());
+  document.addEventListener('keydown', function(e) { if (e.ctrlKey || e.metaKey) e.preventDefault(); });
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  window.addEventListener('load', run);
+})();
+</script>
+</body>
+</html>

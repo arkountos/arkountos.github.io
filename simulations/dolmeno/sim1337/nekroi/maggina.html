@@ -112,15 +112,53 @@
     transition: opacity 2.8s ease-in;
   }
   #veil.on { opacity: 1; }
+
+  /* company logo — fixed top-right, tinted green */
+  #logo {
+    position: fixed;
+    top: clamp(.8rem, 2.5vw, 1.8rem);
+    right: clamp(.8rem, 2.5vw, 1.8rem);
+    width: clamp(55px, 7vw, 110px);
+    opacity: .3;
+    filter: grayscale(1) brightness(4) sepia(1) hue-rotate(85deg);
+    z-index: 9;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
 <div id="terminal"></div>
 <div id="veil"></div>
+<img id="logo" src="../../logo.png" alt="">
 <script>
 (function() {
+  // ── boot sequence ───────────────────────────────────────────────────────────
+  const BOOT = [
+    {t:"DOLMENO SYSTEMS  —  BIOS v2.31.09",              cls:"sys", wait:120, speed:4},
+    {t:"Copyright (C) 1998-2031 Dolmeno Systems Inc.",   cls:"sys", wait:60,  speed:4},
+    {t:"",                                               cls:"sys", wait:40},
+    {t:"CPU  : DLMN/PROC-X9  @  4.10GHz  [4 cores]",    cls:"sys", wait:80,  speed:4},
+    {t:"MEM  : 1048576K  OK",                            cls:"sys", wait:180, speed:4},
+    {t:"DISK : /dev/sda [OK]   /dev/sdb [OK]",           cls:"sys", wait:80,  speed:4},
+    {t:"",                                               cls:"sys", wait:50},
+    {t:"Loading DOLMENO/OS 7.4.1-sim ...",               cls:"sys", wait:350, speed:7},
+    {t:"[ OK ] simulation kernel",                       cls:"sys", wait:100, speed:5},
+    {t:"[ OK ] cluster daemon  —  node sim1337",         cls:"sys", wait:90,  speed:5},
+    {t:"[ OK ] encryption layer",                        cls:"sys", wait:80,  speed:5},
+    {t:"[ OK ] network  :  internal.dolmeno.net",        cls:"sys", wait:80,  speed:5},
+    {t:"[ OK ] session logger",                          cls:"sys", wait:80,  speed:5},
+    {t:"[WARN] external connection request  —  unknown node", cls:"sys", wait:700, speed:7},
+    {t:"",                                               cls:"sys", wait:100},
+    {t:"dolmeno login: maggina",                         cls:"sys", wait:550, speed:14},
+    {t:"password: ············",                         cls:"sys", wait:750, speed:16},
+    {t:"",                                               cls:"sys", wait:150},
+    {t:"last login: Thu Sep 11 03:17:42 2031 on tty1",   cls:"sys", wait:110, speed:5},
+    {t:"session type: RESTRICTED  —  activity is logged",cls:"sys", wait:450, speed:5},
+    {t:"",                                               cls:"sys", wait:600},
+  ];
+
   // ── script ──────────────────────────────────────────────────────────────────
-  const LINES = [
+  const LINES = [...BOOT,
     {t:"",                                              cls:"sys", wait:500},
     {t:"",                                              cls:"sys", wait:300},
     {t:"> Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},

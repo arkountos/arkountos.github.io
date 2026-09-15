@@ -126,12 +126,14 @@
     right: clamp(.8rem, 2vw, 1.6rem);
     color: var(--green);
     font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(7px, .9vw, 13px);
+    font-size: clamp(14px, 1.8vw, 26px);
     line-height: 1.25;
     text-align: left;
     z-index: 5;
     pointer-events: none;
     opacity: .72;
+    border-left: 1px solid rgba(0,255,65,.4);
+    padding-left: clamp(.6rem, 1.2vw, 1.2rem);
   }
 
   #hud-logo {
@@ -141,7 +143,7 @@
   }
 
   #hud-name {
-    font-size: clamp(6px, .7vw, 10px);
+    font-size: clamp(12px, 1.4vw, 20px);
     letter-spacing: .08em;
     margin-top: .5em;
     opacity: .85;
@@ -149,7 +151,7 @@
 
   #hud-data {
     margin-top: 2em;
-    font-size: clamp(5.5px, .65vw, 9px);
+    font-size: clamp(11px, 1.3vw, 18px);
     line-height: 1.9;
     opacity: .65;
   }
@@ -181,10 +183,19 @@
 (function() {
   // ── boot sequence ───────────────────────────────────────────────────────────
   const BOOT = [
+    {t:"██████╗  ██╗     ███╗   ███╗███╗   ██╗", cls:"sys", wait:300, speed:2},
+    {t:"██╔══██╗ ██║     ████╗ ████║████╗  ██║", cls:"sys", wait:0,   speed:2},
+    {t:"██║  ██║ ██║     ██╔████╔██║██╔██╗ ██║", cls:"sys", wait:0,   speed:2},
+    {t:"██║  ██║ ██║     ██║╚██╔╝██║██║╚██╗██║", cls:"sys", wait:0,   speed:2},
+    {t:"██████╔╝ ███████╗██║ ╚═╝ ██║██║ ╚████║", cls:"sys", wait:0,   speed:2},
+    {t:"╚═════╝  ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝", cls:"sys", wait:0,   speed:2},
+    {t:"",                                        cls:"sys", wait:0},
+    {t:"Deep Learning Modelling Networks",        cls:"sys", wait:0,   speed:4},
+    {t:"",                                        cls:"sys", wait:400},
     {t:"DLMN SYSTEMS  —  BIOS v2.31.09",              cls:"sys", wait:120, speed:4},
     {t:"Copyright (C) 1998-2061 DLMN Systems Inc.",   cls:"sys", wait:60,  speed:4},
     {t:"",                                               cls:"sys", wait:40},
-    {t:"CPU  : DLMN/PROC-X9  @  4.10GHz  [4 cores]",    cls:"sys", wait:80,  speed:4},
+    {t:"CPU  : DLMN/PROC-X9  @  10GHz  [40 cores]",     cls:"sys", wait:80,  speed:4},
     {t:"MEM  : 1048576K  OK",                            cls:"sys", wait:180, speed:4},
     {t:"DISK : /dev/sda [OK]   /dev/sdb [OK]",           cls:"sys", wait:80,  speed:4},
     {t:"",                                               cls:"sys", wait:50},
@@ -231,12 +242,12 @@
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
-    {t:"μέχρι να τελειώσει η προσομοίωση. δουλεύει για το Φωκά. Οι προσωμοιώσεις τρέχουν στ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
+    {t:"μέχρι να τελειώσει η προσομοίωση. Οι προσωμοιώσεις τρέχουν στ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
     {t:"",                                              cls:"her", wait:800},
     {t:"εκτος αν πατήσετε το κουμπί, αλλά μην πιείτε το νερό. Για να βγείτε από εκεί π",                     cls:"her", wait:2400, speed:130, glitch:.5},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
-    {t:",εδώ είναι ο υπεύθυνος του data center. σε εσάς είν",                     cls:"her", wait:2400, speed:130, glitch:.5},
+    {t:",εδώ είναι ο υπεύθυνος του σταθμού. σε εσάς είν",                     cls:"her", wait:2400, speed:130, glitch:.5},
     {t:"Οι συνέπειες δεν σταματούν στον δικό μου κόσμο.",                              cls:"her", wait:2000, speed:70,  glitch:.15},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},

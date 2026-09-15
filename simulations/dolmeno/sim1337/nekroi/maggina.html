@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>σύνδεση</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #00ff41;
+    --dim:   #007a1f;
+    --sys:   #4af;
+    --bg:    #030e03;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(14px, 2vw, 18px);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+  }
+
+  /* CRT scanlines */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,.18) 3px,
+      rgba(0,0,0,.18) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Vignette */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 55%,
+      rgba(0,0,0,.75) 100%
+    );
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  #terminal {
+    position: fixed; inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    gap: .55em;
+    z-index: 1;
+  }
+
+  .line {
+    display: block;
+    min-height: 1.4em;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+    opacity: 0;
+    transition: none;
+  }
+
+  .line.sys   { color: var(--sys);   font-size: .82em; letter-spacing: .12em; }
+  .line.her   { color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.6); }
+  .line.blank { min-height: .6em; }
+
+  /* blinking cursor appended to the active line */
+  .cursor {
+    display: inline-block;
+    width: .55em; height: 1em;
+    background: var(--green);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink .7s step-end infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* flicker on page load */
+  @keyframes flicker {
+    0%   { opacity: 0 }
+    8%   { opacity: .9 }
+    9%   { opacity: 0 }
+    10%  { opacity: .85 }
+    11%  { opacity: 0 }
+    20%  { opacity: 1 }
+    100% { opacity: 1 }
+  }
+  #terminal { animation: flicker 1.1s ease-out forwards; }
+
+  /* final fade to black */
+  #veil {
+    position: fixed; inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 2.8s ease-in;
+  }
+  #veil.on { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="terminal"></div>
+<div id="veil"></div>
+<script>
+(function() {
+  // ── script ──────────────────────────────────────────────────────────────────
+  const LINES = [
+    {t:"",                                              cls:"sys", wait:500},
+    {t:"> ΕΙΣΕΡΧΟΜΕΝΗ ΣΥΝΔΕΣΗ",                         cls:"sys", wait:900,  speed:40},
+    {t:"",                                              cls:"sys", wait:300},
+    {t:"με ακούς;",                                     cls:"her", wait:1800, speed:95,  glitch:.2},
+    {t:"δεν έχω πολύ χρόνο. το νερό... θυμάμαι το νερό.", cls:"her", wait:1600, speed:75, glitch:.3},
+    {t:"[ΤΟ ΟΝΟΜΑ ΤΟΥ ΧΑΡΑΚΤΗΡΑ]",                    cls:"her", wait:1500, speed:140, glitch:.85},
+    {t:"",                                              cls:"her", wait:600},
+    {t:"ΤΟ HINT ΣΟΥ ΕΔΩ.",                              cls:"her", wait:2000, speed:70,  glitch:.15},
+    {t:"",                                              cls:"her", wait:800},
+    {t:"μη μ' αφήσεις να ξεχάσω.",                     cls:"her", wait:2400, speed:130, glitch:.5},
+    {t:"> ΑΠΩΛΕΙΑ ΣΗΜΑΤΟΣ",                             cls:"sys", wait:3000, speed:40},
+  ];
+  // ────────────────────────────────────────────────────────────────────────────
+
+  const GLITCH_CHARS = "▓▒░│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌";
+
+  const container = document.getElementById('terminal');
+  const veil      = document.getElementById('veil');
+
+  function glitchChar() {
+    return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+  }
+
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function makeEl(cls) {
+    const el = document.createElement('span');
+    el.className = 'line ' + (cls || '');
+    el.style.opacity = '0';
+    container.appendChild(el);
+    return el;
+  }
+
+  async function typeText(el, text, speed, glitchProb) {
+    el.style.opacity = '1';
+    if (!text) return;
+
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    el.appendChild(cursor);
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const node = document.createTextNode(ch);
+      el.insertBefore(node, cursor);
+
+      // glitch: briefly show a wrong char then correct it
+      if (glitchProb && Math.random() < glitchProb) {
+        node.textContent = glitchChar();
+        await delay(speed * (.4 + Math.random() * .6));
+        node.textContent = ch;
+      }
+
+      // occasional stutter
+      const stutter = Math.random() < .05 ? speed * (1 + Math.random() * 3) : 0;
+      await delay(speed * (.5 + Math.random() * 1) + stutter);
+    }
+
+    cursor.remove();
+  }
+
+  async function run() {
+    for (let i = 0; i < LINES.length; i++) {
+      const { t, cls, wait, speed = 80, glitch = 0 } = LINES[i];
+
+      await delay(wait);
+
+      const el = makeEl(cls + (t === '' ? ' blank' : ''));
+      await typeText(el, t, speed, glitch);
+    }
+
+    // signal lost — fade everything to black
+    await delay(800);
+    veil.classList.add('on');
+  }
+
+  // block all copy/print attempts
+  document.addEventListener('copy',        e => e.preventDefault());
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey || e.metaKey) e.preventDefault();
+  });
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  window.addEventListener('load', run);
+})();
+</script>
+</body>
+</html>

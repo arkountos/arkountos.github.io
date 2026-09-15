@@ -79,8 +79,9 @@
     transition: none;
   }
 
-  .line.sys   { color: var(--sys);   font-size: .82em; letter-spacing: .12em; }
-  .line.her   { color: var(--green); text-shadow: 0 0 8px rgba(0,255,65,.6); }
+  .line.sys   { color: var(--green); font-size: .82em; letter-spacing: .12em; }
+  .line.warn  { color: #FFB000;      font-size: .82em; letter-spacing: .12em; }
+  .line.her   { color: var(--green); font-size: .82em; letter-spacing: .12em; }
   .line.blank { min-height: .6em; }
 
   /* blinking cursor appended to the active line */
@@ -123,9 +124,9 @@
     position: fixed;
     top: clamp(.8rem, 2vw, 1.6rem);
     right: clamp(.8rem, 2vw, 1.6rem);
-    color: var(--sys);
+    color: var(--green);
     font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(4.5px, .55vw, 8px);
+    font-size: clamp(7px, .9vw, 13px);
     line-height: 1.25;
     text-align: left;
     z-index: 5;
@@ -136,11 +137,11 @@
   #hud-logo {
     white-space: pre;
     margin: 0;
-    text-shadow: 0 0 6px rgba(255,176,0,.5);
+    text-shadow: 0 0 6px rgba(0,255,65,.45);
   }
 
   #hud-name {
-    font-size: clamp(5px, .58vw, 8.5px);
+    font-size: clamp(6px, .7vw, 10px);
     letter-spacing: .08em;
     margin-top: .5em;
     opacity: .85;
@@ -148,7 +149,7 @@
 
   #hud-data {
     margin-top: 2em;
-    font-size: clamp(4.5px, .52vw, 7.5px);
+    font-size: clamp(5.5px, .65vw, 9px);
     line-height: 1.9;
     opacity: .65;
   }
@@ -180,25 +181,25 @@
 (function() {
   // ── boot sequence ───────────────────────────────────────────────────────────
   const BOOT = [
-    {t:"DOLMENO SYSTEMS  —  BIOS v2.31.09",              cls:"sys", wait:120, speed:4},
-    {t:"Copyright (C) 1998-2031 Dolmeno Systems Inc.",   cls:"sys", wait:60,  speed:4},
+    {t:"DLMN SYSTEMS  —  BIOS v2.31.09",              cls:"sys", wait:120, speed:4},
+    {t:"Copyright (C) 1998-2061 DLMN Systems Inc.",   cls:"sys", wait:60,  speed:4},
     {t:"",                                               cls:"sys", wait:40},
     {t:"CPU  : DLMN/PROC-X9  @  4.10GHz  [4 cores]",    cls:"sys", wait:80,  speed:4},
     {t:"MEM  : 1048576K  OK",                            cls:"sys", wait:180, speed:4},
     {t:"DISK : /dev/sda [OK]   /dev/sdb [OK]",           cls:"sys", wait:80,  speed:4},
     {t:"",                                               cls:"sys", wait:50},
-    {t:"Loading DOLMENO/OS 7.4.1-sim ...",               cls:"sys", wait:350, speed:7},
+    {t:"Loading DLMN/OS 7.4.1-sim ...",               cls:"sys", wait:350, speed:7},
     {t:"[ OK ] simulation kernel",                       cls:"sys", wait:100, speed:5},
     {t:"[ OK ] cluster daemon  —  node sim1337",         cls:"sys", wait:90,  speed:5},
     {t:"[ OK ] encryption layer",                        cls:"sys", wait:80,  speed:5},
-    {t:"[ OK ] network  :  internal.dolmeno.net",        cls:"sys", wait:80,  speed:5},
+    {t:"[ OK ] network  :  internal.dlmn.net",        cls:"sys", wait:80,  speed:5},
     {t:"[ OK ] session logger",                          cls:"sys", wait:80,  speed:5},
     {t:"[WARN] external connection request  —  unknown node", cls:"sys", wait:700, speed:7},
     {t:"",                                               cls:"sys", wait:100},
-    {t:"dolmeno login: maggina",                         cls:"sys", wait:550, speed:14},
+    {t:"dlmn login: jess",                         cls:"sys", wait:550, speed:14},
     {t:"password: ············",                         cls:"sys", wait:750, speed:16},
     {t:"",                                               cls:"sys", wait:150},
-    {t:"last login: Thu Sep 11 03:17:42 2031 on tty1",   cls:"sys", wait:110, speed:5},
+    {t:"last login: Thu Sep 11 03:17:42 2061 on tty1",   cls:"sys", wait:110, speed:5},
     {t:"session type: RESTRICTED  —  activity is logged",cls:"sys", wait:450, speed:5},
     {t:"",                                               cls:"sys", wait:600},
   ];
@@ -207,40 +208,41 @@
   const LINES = [...BOOT,
     {t:"",                                              cls:"sys", wait:500},
     {t:"",                                              cls:"sys", wait:300},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:4000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:4000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:4000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:4000,  speed:40},
     {t:"με ακούς;",                                     cls:"her", wait:1800, speed:95,  glitch:.2},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"Δεν είναι παιχνίδι! Είναι αλήθει", cls:"her", wait:1600, speed:75, glitch:.3},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"ΝΙΝΑ",                    cls:"her", wait:1500, speed:140, glitch:.85},
     {t:"",                                              cls:"her", wait:600},
     {t:"η Μαγγίνα είμαι",                              cls:"her", wait:2000, speed:70,  glitch:.15},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:4000,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:4000,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"η Μαγγίνα είσαι εσ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
     {t:"φήσεις να πατήσουν το κουμπί. Κάθε 5",                              cls:"her", wait:2000, speed:70,  glitch:.15},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:"μέχρι να τελειώσει η προσομοίωση. δουλεύει για το Φωκά. Οι προσωμοιώσεις τρέχουν στ",                              cls:"her", wait:2000, speed:70,  glitch:.15},
     {t:"",                                              cls:"her", wait:800},
     {t:"εκτος αν πατήσετε το κουμπί, αλλά μην πιείτε το νερό. Για να βγείτε από εκεί π",                     cls:"her", wait:2400, speed:130, glitch:.5},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
     {t:",εδώ είναι ο υπεύθυνος του data center. σε εσάς είν",                     cls:"her", wait:2400, speed:130, glitch:.5},
     {t:"Οι συνέπειες δεν σταματούν στον δικό μου κόσμο.",                              cls:"her", wait:2000, speed:70,  glitch:.15},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"sys", wait:900,  speed:40},
-    {t:"ground-station@dlmn:~$ maggina is not in the sudoers file. This incident will be reported.",                             cls:"sys", wait:10000, speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:900,  speed:40},
+    {t:"ground-station@dlmn:~$ jess is not in the sudoers file. This incident will be reported.",                                cls:"warn", wait:10000, speed:40},
+    {countdown: 10, wait: 2000},
   ];
   // ────────────────────────────────────────────────────────────────────────────
 
@@ -294,16 +296,31 @@
 
   async function run() {
     for (let i = 0; i < LINES.length; i++) {
-      const { t, cls, wait, speed = 80, glitch = 0 } = LINES[i];
+      const entry = LINES[i];
 
+      // countdown: types in-place, then blanks the screen
+      if (entry.countdown) {
+        await delay(entry.wait || 0);
+        const el = makeEl('warn');
+        el.style.opacity = '1';
+        for (let c = entry.countdown; c >= 0; c--) {
+          el.textContent = 'system restart scheduled  —  T-' + c + 's';
+          container.scrollTop = container.scrollHeight;
+          await delay(1000);
+        }
+        break;
+      }
+
+      const { t, cls, wait, speed = 80, glitch = 0 } = entry;
       await delay(wait);
 
       const el = makeEl(cls + (t === '' ? ' blank' : ''));
-      await typeText(el, t, speed, glitch);
+      const display = (cls === 'her' && t) ? 'jess@ground-station:~$ ' + t : t;
+      await typeText(el, display, speed, glitch);
     }
 
-    // signal lost — fade everything to black
-    await delay(800);
+    // restart — cut to black
+    await delay(600);
     veil.classList.add('on');
   }
 

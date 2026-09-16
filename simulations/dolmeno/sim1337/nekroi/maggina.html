@@ -62,7 +62,7 @@
     flex-direction: column;
     justify-content: flex-start;
     padding: clamp(1.5rem, 5vw, 4rem);
-    padding-bottom: clamp(3rem, 8vw, 6rem);
+    padding-bottom: calc(clamp(3rem, 8vw, 6rem) + env(safe-area-inset-bottom, 0px));
     gap: .55em;
     z-index: 1;
     overflow-y: auto;
@@ -293,12 +293,16 @@
 
   function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+  function scrollToBottom() {
+    container.scrollTop = container.scrollHeight;
+  }
+
   function makeEl(cls) {
     const el = document.createElement('span');
     el.className = 'line ' + (cls || '');
     el.style.opacity = '0';
     container.appendChild(el);
-    container.scrollTop = container.scrollHeight;
+    scrollToBottom();
     return el;
   }
 
@@ -314,6 +318,7 @@
       const ch = text[i];
       const node = document.createTextNode(ch);
       el.insertBefore(node, cursor);
+      scrollToBottom();
 
       // glitch: briefly show a wrong char then correct it
       if (glitchProb && Math.random() < glitchProb) {
@@ -328,6 +333,7 @@
     }
 
     cursor.remove();
+    scrollToBottom();
   }
 
   async function run() {
@@ -341,7 +347,7 @@
         el.style.opacity = '1';
         for (let c = entry.countdown; c >= 0; c--) {
           el.textContent = 'system restart scheduled  —  T-' + c + 's';
-          container.scrollTop = container.scrollHeight;
+          scrollToBottom();
           await delay(1000);
         }
         break;

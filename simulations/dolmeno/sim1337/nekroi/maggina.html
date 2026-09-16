@@ -57,7 +57,10 @@
   }
 
   #terminal {
-    position: fixed; inset: 0;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 100vh;    /* fallback for browsers without dvh */
+    height: 100dvh;   /* tracks the mobile toolbar showing/hiding */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -66,6 +69,8 @@
     gap: .55em;
     z-index: 1;
     overflow-y: auto;
+    overscroll-behavior: contain;      /* no pull-to-refresh / page-bounce hijack */
+    -webkit-overflow-scrolling: touch; /* momentum scrolling on older iOS */
     scrollbar-width: none;
   }
 
@@ -138,11 +143,15 @@
     border-left: 1px solid rgba(0,255,65,.4);
     padding-left: clamp(.6rem, 1.2vw, 1.2rem);
     max-width: clamp(260px, 32vw, 480px);
+    overflow: hidden;
   }
 
   #hud-logo {
     white-space: pre;
     margin: 0;
+    /* 39 monospace chars wide; `pre` can't wrap, so keep it narrow
+       enough to fit inside the HUD's max-width at every screen size */
+    font-size: clamp(8px, 1.25vw, 19px);
     text-shadow: 0 0 6px rgba(0,255,65,.45);
   }
 
@@ -246,7 +255,6 @@
   const LINES = [...BOOT,
     {t:"",                                              cls:"sys", wait:500},
     {t:"",                                              cls:"sys", wait:300},
-    {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:12000,  speed:40},
     {t:"με ακούς;",                                     cls:"her", wait:1800, speed:95,  glitch:.2},
     {t:"ground-station@dlmn:~$ Unauthorized connection detected, shutting down, SIGSTOP (signal 19)",                         cls:"warn", wait:3000,  speed:40},
@@ -293,8 +301,16 @@
 
   function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+  let scrollQueued = false;
   function scrollToBottom() {
     container.scrollTop = container.scrollHeight;
+    // mobile browsers reflow a frame late — pin again once layout settles
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(function () {
+      scrollQueued = false;
+      container.scrollTop = container.scrollHeight;
+    });
   }
 
   function makeEl(cls) {
@@ -372,6 +388,12 @@
     if (e.ctrlKey || e.metaKey) e.preventDefault();
   });
   document.addEventListener('contextmenu', e => e.preventDefault());
+
+  window.addEventListener('resize', scrollToBottom);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', scrollToBottom);
+    window.visualViewport.addEventListener('scroll', scrollToBottom);
+  }
 
   window.addEventListener('load', run);
 })();

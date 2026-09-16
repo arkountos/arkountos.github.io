@@ -54,7 +54,10 @@
   }
 
   #terminal {
-    position: fixed; inset: 0;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 100vh;    /* fallback for browsers without dvh */
+    height: 100dvh;   /* tracks the mobile toolbar showing/hiding */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -63,6 +66,8 @@
     gap: .55em;
     z-index: 1;
     overflow-y: auto;
+    overscroll-behavior: contain;      /* no pull-to-refresh / page-bounce hijack */
+    -webkit-overflow-scrolling: touch; /* momentum scrolling on older iOS */
     scrollbar-width: none;
   }
 
@@ -208,8 +213,16 @@
 
   function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+  let scrollQueued = false;
   function scrollToBottom() {
     container.scrollTop = container.scrollHeight;
+    // mobile browsers reflow a frame late — pin again once layout settles
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(function () {
+      scrollQueued = false;
+      container.scrollTop = container.scrollHeight;
+    });
   }
 
   function makeEl(cls) {
@@ -256,6 +269,12 @@
   document.addEventListener('copy',        e => e.preventDefault());
   document.addEventListener('keydown', function(e) { if (e.ctrlKey || e.metaKey) e.preventDefault(); });
   document.addEventListener('contextmenu', e => e.preventDefault());
+
+  window.addEventListener('resize', scrollToBottom);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', scrollToBottom);
+    window.visualViewport.addEventListener('scroll', scrollToBottom);
+  }
 
   window.addEventListener('load', run);
 })();

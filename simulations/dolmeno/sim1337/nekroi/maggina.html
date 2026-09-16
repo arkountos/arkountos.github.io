@@ -78,6 +78,10 @@
 
   .line {
     display: block;
+    /* flex items shrink by default — once the log overflows, that squashes each
+       line below its text height, so lines pile on top of each other and
+       scrollHeight stops matching the real content */
+    flex: 0 0 auto;
     min-height: 1.4em;
     line-height: 1.4;
     white-space: pre-wrap;
@@ -301,15 +305,24 @@
 
   function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+  // Follow the newest line, but let go the moment the reader scrolls up
+  // themselves — otherwise every keystroke drags them back down.
+  let pinToBottom = true;
+  container.addEventListener('scroll', function () {
+    const slack = container.scrollHeight - container.clientHeight - container.scrollTop;
+    pinToBottom = slack < 40;
+  }, { passive: true });
+
   let scrollQueued = false;
   function scrollToBottom() {
+    if (!pinToBottom) return;
     container.scrollTop = container.scrollHeight;
     // mobile browsers reflow a frame late — pin again once layout settles
     if (scrollQueued) return;
     scrollQueued = true;
     requestAnimationFrame(function () {
       scrollQueued = false;
-      container.scrollTop = container.scrollHeight;
+      if (pinToBottom) container.scrollTop = container.scrollHeight;
     });
   }
 

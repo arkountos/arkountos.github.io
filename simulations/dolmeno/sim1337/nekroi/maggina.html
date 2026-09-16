@@ -161,6 +161,11 @@
   }
 
   #hud-data span { display: block; }
+
+  /* hide the HUD column on phones */
+  @media (max-width: 768px) {
+    #hud { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -189,14 +194,17 @@
 </div>
 <script src="dlmn-orbit.js"></script>
 <script>
-  var orbitStatus = document.getElementById('orbit-status');
-  DLMNOrbit.mount(document.getElementById('orbit'), {
-    onStatus: function(s) {
-      orbitStatus.textContent = s.stationVisible
-        ? 'relay ' + s.relay + '  ·  ' + s.links + ' links'
-        : 'station below horizon';
-    }
-  });
+  // the HUD is hidden on phones — skip the animation entirely there
+  if (!window.matchMedia('(max-width: 768px)').matches) {
+    var orbitStatus = document.getElementById('orbit-status');
+    DLMNOrbit.mount(document.getElementById('orbit'), {
+      onStatus: function(s) {
+        orbitStatus.textContent = s.stationVisible
+          ? 'relay ' + s.relay + '  ·  ' + s.links + ' links'
+          : 'station below horizon';
+      }
+    });
+  }
 </script>
 <script>
 (function() {
@@ -212,7 +220,7 @@
     {t:"Deep Learning Modelling Networks",        cls:"sys", wait:0,   speed:4},
     {t:"",                                        cls:"sys", wait:400},
     {t:"DLMN SYSTEMS  —  BIOS v2.31.09",              cls:"sys", wait:120, speed:4},
-    {t:"Copyright (C) 1998-2061 DLMN Systems Inc.",   cls:"sys", wait:60,  speed:4},
+    {t:"Copyright (C) 1998-2161 DLMN Systems Inc.",   cls:"sys", wait:60,  speed:4},
     {t:"",                                               cls:"sys", wait:40},
     {t:"CPU  : DLMN/PROC-X9  @  10GHz  [40 cores]",     cls:"sys", wait:80,  speed:4},
     {t:"MEM  : 1048576K  OK",                            cls:"sys", wait:180, speed:4},
@@ -229,7 +237,7 @@
     {t:"dlmn login: jess",                         cls:"sys", wait:550, speed:14},
     {t:"password: ············",                         cls:"sys", wait:750, speed:16},
     {t:"",                                               cls:"sys", wait:150},
-    {t:"last login: Thu Sep 21 03:17:42 2061 on tty1",   cls:"sys", wait:110, speed:5},
+    {t:"last login: Thu Sep 21 03:17:42 2161 on tty1",   cls:"sys", wait:110, speed:5},
     {t:"session type: RESTRICTED  —  activity is logged",cls:"sys", wait:450, speed:5},
     {t:"",                                               cls:"sys", wait:600},
   ];

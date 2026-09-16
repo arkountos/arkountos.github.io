@@ -125,6 +125,11 @@
   #hud-name { font-size: clamp(12px, 1.4vw, 20px); letter-spacing: .08em; margin-top: .5em; opacity: .85; }
   #hud-data { margin-top: 2em; font-size: clamp(11px, 1.3vw, 18px); line-height: 1.9; opacity: .65; }
   #hud-data span { display: block; }
+
+  /* hide the HUD column on phones */
+  @media (max-width: 768px) {
+    #hud { display: none; }
+  }
 </style>
 </head>
 <body>

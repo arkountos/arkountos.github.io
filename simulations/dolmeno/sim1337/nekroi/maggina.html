@@ -179,11 +179,150 @@
   @media (max-width: 768px) {
     #hud { display: none; }
   }
+
+  /* ── handheld gate ── the session is unreadable on a phone, so a handheld
+     gets a ringing call screen instead of the terminal ──────────────────── */
+  #callgate { display: none; }
+
+  html.handheld #terminal,
+  html.handheld #hud { display: none !important; }
+
+  html.handheld #callgate {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5em;
+    padding: calc(2rem + env(safe-area-inset-top, 0px)) 1.5rem
+             calc(2rem + env(safe-area-inset-bottom, 0px));
+    text-align: center;
+    z-index: 5;
+    animation: flicker 1.1s ease-out forwards;
+  }
+
+  #call-label {
+    font-size: .72em;
+    letter-spacing: .3em;
+    color: var(--sys);
+    opacity: .85;
+  }
+
+  /* pulsing ring around the caller glyph */
+  #call-ring {
+    position: relative;
+    width: 7.5em; height: 7.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0,255,65,.55);
+    border-radius: 50%;
+    box-shadow: 0 0 18px rgba(0,255,65,.25) inset;
+  }
+
+  #call-ring::before,
+  #call-ring::after {
+    content: '';
+    position: absolute; inset: -1px;
+    border: 1px solid rgba(0,255,65,.5);
+    border-radius: 50%;
+    animation: callpulse 2s ease-out infinite;
+  }
+
+  #call-ring::after { animation-delay: 1s; }
+
+  @keyframes callpulse {
+    0%   { transform: scale(1);    opacity: .7 }
+    100% { transform: scale(1.65); opacity: 0  }
+  }
+
+  #call-glyph {
+    font-size: 2.6em;
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(0,255,65,.5);
+    animation: callshake 2s ease-in-out infinite;
+  }
+
+  @keyframes callshake {
+    0%, 12%, 100% { transform: rotate(0deg) }
+    2%  { transform: rotate(-14deg) }
+    4%  { transform: rotate(12deg) }
+    6%  { transform: rotate(-10deg) }
+    8%  { transform: rotate(8deg) }
+    10% { transform: rotate(-5deg) }
+  }
+
+  #call-text { line-height: 1.6; }
+
+  #call-text .who {
+    display: block;
+    font-size: 1.45em;
+    letter-spacing: .14em;
+    text-shadow: 0 0 8px rgba(0,255,65,.45);
+  }
+
+  #call-text .from {
+    display: block;
+    font-size: .8em;
+    letter-spacing: .18em;
+    opacity: .6;
+    margin-bottom: .5em;
+  }
+
+  #call-state {
+    font-size: .8em;
+    letter-spacing: .2em;
+    color: var(--sys);
+    opacity: .8;
+  }
+
+  #call-state .dots::after {
+    content: '';
+    animation: calldots 1.6s steps(4, end) infinite;
+  }
+
+  @keyframes calldots {
+    0%   { content: '' }
+    25%  { content: '.' }
+    50%  { content: '..' }
+    75%  { content: '...' }
+  }
+
+  #call-action {
+    margin-top: .5em;
+    padding: .85em 1.6em;
+    border: 1px solid rgba(0,255,65,.45);
+    font-size: .88em;
+    letter-spacing: .16em;
+    color: var(--green);
+    background: rgba(0,255,65,.05);
+    animation: blink 1.8s step-end infinite;
+  }
+
+  #call-note {
+    font-size: .68em;
+    letter-spacing: .12em;
+    opacity: .45;
+    max-width: 22em;
+    line-height: 1.7;
+  }
 </style>
 </head>
 <body>
 <div id="terminal"></div>
 <div id="veil"></div>
+<div id="callgate">
+  <div id="call-label">DLMN · SECURE RELAY · node sim1337</div>
+  <div id="call-ring"><div id="call-glyph">&#9742;</div></div>
+  <div id="call-text">
+    <span class="from">incoming call from user</span>
+    <span class="who">MAGGINA</span>
+  </div>
+  <div id="call-state">ringing<span class="dots"></span></div>
+  <div id="call-action">OPEN IN DESKTOP</div>
+  <div id="call-note">This session cannot be answered from a handheld device.</div>
+</div>
 <div id="hud">
   <pre id="hud-logo">
 ██████╗  ██╗     ███╗   ███╗███╗   ██╗
@@ -205,10 +344,18 @@
     <span>uptime        : 847d 03:17:42</span>
   </div>
 </div>
+<script>
+  // A handheld can't render the session — it gets the call screen instead, and
+  // both the orbit HUD and the boot sequence stay off.
+  window.DLMN_HANDHELD = window.matchMedia(
+    '(max-width: 768px), (pointer: coarse) and (hover: none)'
+  ).matches;
+  if (window.DLMN_HANDHELD) document.documentElement.classList.add('handheld');
+</script>
 <script src="dlmn-orbit.js"></script>
 <script>
   // the HUD is hidden on phones — skip the animation entirely there
-  if (!window.matchMedia('(max-width: 768px)').matches) {
+  if (!window.DLMN_HANDHELD) {
     var orbitStatus = document.getElementById('orbit-status');
     DLMNOrbit.mount(document.getElementById('orbit'), {
       onStatus: function(s) {
@@ -408,7 +555,7 @@
     window.visualViewport.addEventListener('scroll', scrollToBottom);
   }
 
-  window.addEventListener('load', run);
+  if (!window.DLMN_HANDHELD) window.addEventListener('load', run);
 })();
 </script>
 </body>
